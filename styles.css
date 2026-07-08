@@ -63,7 +63,8 @@ p {
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
   letter-spacing: 0;
 }
 
@@ -83,6 +84,11 @@ h2 {
 h3 {
   margin-bottom: 8px;
   font-size: 20px;
+}
+
+h4 {
+  margin: 0 0 8px;
+  font-size: 17px;
 }
 
 p {
@@ -385,7 +391,10 @@ main {
 .service-card,
 .post-card,
 .character-card,
-.order-card {
+.order-card,
+.request-card,
+.public-job-card,
+.recommend-grid article {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background:
@@ -437,7 +446,10 @@ main {
 .card-grid,
 .service-grid,
 .post-grid,
-.character-grid {
+.character-grid,
+.request-grid,
+.public-job-grid,
+.recommend-grid {
   display: grid;
   gap: 16px;
 }
@@ -448,7 +460,9 @@ main {
 
 .service-grid,
 .post-grid,
-.character-grid {
+.character-grid,
+.request-grid,
+.public-job-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -552,9 +566,29 @@ textarea::placeholder {
 
 .service-card,
 .post-card,
-.character-card {
+.character-card,
+.request-card,
+.public-job-card,
+.recommend-grid article {
   min-width: 0;
   padding: 18px;
+}
+
+.public-job-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.public-job-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--cyan), var(--gold));
+}
+
+.public-job-card > * {
+  position: relative;
 }
 
 .hint {
@@ -670,7 +704,8 @@ textarea::placeholder {
 }
 
 .action-hint,
-.review-note {
+.review-note,
+.requirement-text {
   color: var(--muted);
   line-height: 1.55;
 }
@@ -688,6 +723,73 @@ textarea::placeholder {
   border: 1px dashed rgba(255, 210, 122, 0.38);
   border-radius: 14px;
   background: rgba(255, 210, 122, 0.08);
+}
+
+.requirement-text {
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--cyan);
+  border-radius: 12px;
+  background: rgba(57, 213, 214, 0.07);
+}
+
+.message-thread {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.message-thread div {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.message-thread strong,
+.message-thread span {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.message-thread span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.message-thread p {
+  margin: 6px 0 0;
+  line-height: 1.55;
+}
+
+.recommend-panel {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px dashed rgba(57, 213, 214, 0.36);
+  border-radius: var(--radius);
+  background: rgba(57, 213, 214, 0.06);
+}
+
+.compact-title {
+  margin-bottom: 12px;
+}
+
+.compact-title h3 {
+  margin-bottom: 0;
+}
+
+.recommend-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.recommend-grid article {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03)),
+    var(--panel-2);
+}
+
+.recommend-grid p {
+  margin-bottom: 10px;
 }
 
 .timeline {
@@ -712,6 +814,14 @@ textarea::placeholder {
 .timeline span.done {
   color: #071014;
   background: var(--cyan);
+}
+
+.timeline.decline-flow {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.timeline.decline-flow span.done {
+  background: var(--gold);
 }
 
 .metric-grid {
@@ -862,6 +972,9 @@ textarea::placeholder {
   .service-grid,
   .post-grid,
   .character-grid,
+  .request-grid,
+  .public-job-grid,
+  .recommend-grid,
   .summary-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -940,6 +1053,9 @@ textarea::placeholder {
   .service-grid,
   .post-grid,
   .character-grid,
+  .request-grid,
+  .public-job-grid,
+  .recommend-grid,
   .summary-strip,
   .toolbar,
   .form-grid,
