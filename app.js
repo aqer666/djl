@@ -724,6 +724,11 @@ function setCharacterCover(characterId, imageUrl) {
   render();
 }
 
+function closeActiveDialog(trigger) {
+  const dialog = trigger.closest("dialog");
+  if (dialog) dialog.close();
+}
+
 function submitStatusReview(id) {
   const order = state.orders.find((item) => item.id === id);
   if (!order || pendingReviewFor(id)) return;
@@ -854,6 +859,9 @@ document.addEventListener("click", (event) => {
 
   const coverButton = event.target.closest("[data-set-cover]");
   if (coverButton) setCharacterCover(coverButton.dataset.setCover, coverButton.dataset.imageUrl);
+
+  const closeButton = event.target.closest("[data-dialog-close]");
+  if (closeButton) closeActiveDialog(closeButton);
 });
 
 document.querySelector("#orderForm").addEventListener("submit", submitOrder);
