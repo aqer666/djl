@@ -130,6 +130,71 @@
       </form>
     </dialog>
 
+    <dialog class="modal image-modal" id="imageModal">
+      <form method="dialog" class="modal-card" id="imageForm">
+        <div class="modal-head">
+          <div>
+            <span class="kicker">AI avatar lab</span>
+            <h2>生成 OC 头像</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="关闭">×</button>
+        </div>
+        <div class="form-grid">
+          <label>
+            选择 OC
+            <select name="characterId" id="imageCharacter"></select>
+          </label>
+          <label>
+            风格模板
+            <select name="style">
+              <option value="anime_cyber">赛博霓虹头像</option>
+              <option value="soft_school">清爽校园头像</option>
+              <option value="fantasy_badge">幻想徽章头像</option>
+              <option value="guofeng">现代国风头像</option>
+              <option value="chibi">Q 版头像</option>
+            </select>
+          </label>
+          <label>
+            构图
+            <select name="pose">
+              <option value="portrait">头像特写</option>
+              <option value="half_body">半身设定</option>
+              <option value="full_body">全身参考</option>
+              <option value="merch_mockup">周边预览</option>
+            </select>
+          </label>
+          <label>
+            比例
+            <select name="size">
+              <option value="1024x1024">1:1 方图</option>
+              <option value="1024x1536">2:3 竖图</option>
+              <option value="1536x1024">3:2 横图</option>
+            </select>
+          </label>
+          <label>
+            生成数量
+            <select name="count">
+              <option value="1">1 张</option>
+              <option value="2">2 张</option>
+              <option value="3">3 张</option>
+              <option value="4">4 张</option>
+            </select>
+          </label>
+          <label class="wide-field">
+            提示词补充
+            <textarea name="prompt" rows="4" placeholder="补充表情、服装、氛围、镜头语言等，不要输入知名 IP 或仿画师要求。"></textarea>
+          </label>
+        </div>
+        <div class="generator-status" id="imageStatus" aria-live="polite"></div>
+        <div class="generated-meta" id="imageMeta"></div>
+        <div class="generated-grid" id="imageResults"></div>
+        <div class="modal-actions">
+          <button class="button button-light" value="cancel">关闭</button>
+          <button class="button button-dark" id="generateButton" type="submit">生成头像</button>
+        </div>
+      </form>
+    </dialog>
+
     <script src="./app.js"></script>
   </body>
 </html>

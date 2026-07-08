@@ -59,8 +59,8 @@ const seed = {
     { id: "s-05", artistId: "a-03", title: "商用角色主视觉", category: "商用立绘", price: 1600, days: 20, revisions: 3, commercial: true, source: true }
   ],
   characters: [
-    { id: "c-01", name: "绫濑零音", visibility: "公开", completeness: 86, tags: ["赛博", "半机械", "旧书店"], description: "经营旧书店的半机械少女，能读取书页中残留的梦境数据。" },
-    { id: "c-02", name: "白川未央", visibility: "私密", completeness: 62, tags: ["校园", "治愈", "社团"], description: "雨天会替大家保管伞的摄影社少女，随身携带老式胶片机。" }
+    { id: "c-01", name: "绫濑零音", visibility: "公开", completeness: 86, tags: ["赛博", "半机械", "旧书店"], description: "经营旧书店的半机械少女，能读取书页中残留的梦境数据。", coverUrl: "", generatedImages: [] },
+    { id: "c-02", name: "白川未央", visibility: "私密", completeness: 62, tags: ["校园", "治愈", "社团"], description: "雨天会替大家保管伞的摄影社少女，随身携带老式胶片机。", coverUrl: "", generatedImages: [] }
   ],
   orders: [
     { id: "o-1008", title: "绫濑零音半身立绘", buyer: "夏洛", artistId: "a-01", serviceId: "s-01", characterId: "c-01", budget: 399, finalPrice: 420, status: "in_progress", updated: "今天 14:20", messages: 5 },
@@ -101,11 +101,27 @@ const pageTitle = document.querySelector("#pageTitle");
 const pageKicker = document.querySelector("#pageKicker");
 const orderModal = document.querySelector("#orderModal");
 const characterModal = document.querySelector("#characterModal");
+const imageModal = document.querySelector("#imageModal");
+const imageForm = document.querySelector("#imageForm");
+const imageStatus = document.querySelector("#imageStatus");
+const imageMeta = document.querySelector("#imageMeta");
+const imageResults = document.querySelector("#imageResults");
+const generateButton = document.querySelector("#generateButton");
 
 function loadState() {
   const saved = localStorage.getItem(storeKey);
   if (!saved) return structuredClone(seed);
-  return { ...structuredClone(seed), ...JSON.parse(saved), orderReviews: JSON.parse(saved).orderReviews || structuredClone(seed.orderReviews) };
+  const parsed = JSON.parse(saved);
+  return normalizeState({ ...structuredClone(seed), ...parsed, orderReviews: parsed.orderReviews || structuredClone(seed.orderReviews) });
+}
+
+function normalizeState(nextState) {
+  nextState.characters = nextState.characters.map((character) => ({
+    ...character,
+    coverUrl: character.coverUrl || "",
+    generatedImages: Array.isArray(character.generatedImages) ? character.generatedImages : []
+  }));
+  return nextState;
 }
 
 function saveState() {
@@ -136,6 +152,18 @@ function serviceName(id) {
 
 function characterName(id) {
   return state.characters.find((character) => character.id === id)?.name || "未关联 OC";
+}
+
+function characterById(id) {
+  return state.characters.find((character) => character.id === id);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function nextOrderStatus(status) {
@@ -383,13 +411,18 @@ function renderCharacters() {
       <div class="character-grid">
         ${state.characters.map((item) => `
           <article class="character-card">
-            <div class="character-cover">${item.name.slice(0, 1)}</div>
+            <div class="character-cover ${item.coverUrl ? "has-image" : ""}">
+              ${item.coverUrl ? `<img src="${item.coverUrl}" alt="${item.name} 的 AI 头像" />` : item.name.slice(0, 1)}
+            </div>
             <h3>${item.name}</h3>
             <p>${item.description}</p>
             <div class="progress-line"><span style="width:${item.completeness}%"></span></div>
-            <div class="meta-row"><span>完整度 ${item.completeness}%</span><span>${item.visibility}</span></div>
+            <div class="meta-row"><span>完整度 ${item.completeness}%</span><span>${item.visibility}</span><span>${item.generatedImages.length} 张 AI 图</span></div>
             <div class="tag-row">${item.tags.map((tag) => `<span>${tag}</span>`).join("")}</div>
-            <button class="button button-light wide-button" data-action="open-order" data-character="${item.id}">用这个 OC 约稿</button>
+            <div class="card-actions">
+              <button class="button button-dark" data-action="generate-image" data-character="${item.id}">生成头像</button>
+              <button class="button button-light" data-action="open-order" data-character="${item.id}">用这个 OC 约稿</button>
+            </div>
           </article>
         `).join("")}
       </div>
@@ -571,11 +604,123 @@ function submitCharacter(event) {
     visibility: data.get("visibility"),
     completeness: 58,
     tags: data.get("tags").split(",").map((tag) => tag.trim()).filter(Boolean),
-    description: data.get("description")
+    description: data.get("description"),
+    coverUrl: "",
+    generatedImages: []
   });
   saveState();
   characterModal.close();
   location.hash = "#/characters";
+  render();
+}
+
+function openImageModal(defaults = {}) {
+  fillImageOptions(defaults);
+  imageStatus.textContent = "";
+  imageStatus.className = "generator-status";
+  imageMeta.innerHTML = "";
+  imageResults.innerHTML = "";
+  imageModal.showModal();
+}
+
+function fillImageOptions(defaults = {}) {
+  const characterSelect = document.querySelector("#imageCharacter");
+  characterSelect.innerHTML = state.characters.map((character) => `<option value="${character.id}">${character.name}</option>`).join("");
+  if (defaults.characterId) characterSelect.value = defaults.characterId;
+}
+
+function renderGeneratedResults(character, result) {
+  imageStatus.textContent = `生成完成：${result.images.length} 张图片已保存到 ${character.name} 的资产记录。`;
+  imageStatus.className = "generator-status success";
+  imageMeta.innerHTML = `
+    <span>${result.providerLabel}</span>
+    <span>${result.modeLabel}</span>
+    <span>${result.costPoints} 点</span>
+    <span>任务 ${result.jobId.slice(0, 8)}</span>
+  `;
+  imageResults.innerHTML = `
+    <div class="prompt-preview">
+      <strong>实际 Prompt</strong>
+      <p>${escapeHtml(result.prompt)}</p>
+    </div>
+    ${result.images.map((image) => `
+      <article class="generated-card">
+        <img src="${image.url}" alt="${character.name} 的生成头像" />
+        <button class="button button-light wide-button" type="button" data-set-cover="${character.id}" data-image-url="${image.url}">设为角色封面</button>
+      </article>
+    `).join("")}
+  `;
+}
+
+async function submitImage(event) {
+  event.preventDefault();
+  const data = new FormData(event.currentTarget);
+  const character = characterById(data.get("characterId"));
+  if (!character) return;
+
+  const payload = {
+    title: character.name,
+    description: character.description,
+    profile: character.tags.join(", "),
+    style: data.get("style"),
+    pose: data.get("pose"),
+    size: data.get("size"),
+    count: Number(data.get("count")),
+    prompt: data.get("prompt")
+  };
+
+  generateButton.disabled = true;
+  imageStatus.textContent = "正在生成头像，本地 mock 通常几秒内完成；真实 API 可能需要更久。";
+  imageStatus.className = "generator-status loading";
+  imageMeta.innerHTML = "";
+  imageResults.innerHTML = "";
+
+  try {
+    const response = await fetch("/api/images/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || "生成失败，请稍后再试。");
+    }
+    if (!Array.isArray(result.images) || !result.images.length) {
+      throw new Error("生成服务未返回可用图片。");
+    }
+
+    const generatedAt = new Date().toISOString();
+    character.generatedImages = [
+      ...result.images.map((image) => ({
+        ...image,
+        generatedAt,
+        providerLabel: result.providerLabel,
+        modeLabel: result.modeLabel,
+        prompt: result.prompt,
+        size: payload.size
+      })),
+      ...character.generatedImages
+    ];
+    character.coverUrl ||= result.images[0]?.url || "";
+    character.completeness = Math.min(100, Math.max(character.completeness, 74));
+    saveState();
+    renderGeneratedResults(character, result);
+    renderUserCard();
+  } catch (error) {
+    imageStatus.textContent = error.message || "生成失败，请检查服务是否启动。";
+    imageStatus.className = "generator-status error";
+  } finally {
+    generateButton.disabled = false;
+  }
+}
+
+function setCharacterCover(characterId, imageUrl) {
+  const character = characterById(characterId);
+  if (!character) return;
+  character.coverUrl = imageUrl;
+  saveState();
+  imageStatus.textContent = `已将图片设为 ${character.name} 的角色封面。`;
+  imageStatus.className = "generator-status success";
   render();
 }
 
@@ -683,6 +828,10 @@ document.addEventListener("click", (event) => {
   }
 
   if (event.target.closest('[data-action="new-character"]')) characterModal.showModal();
+  if (event.target.closest('[data-action="generate-image"]')) {
+    const trigger = event.target.closest("[data-character]");
+    openImageModal({ characterId: trigger?.dataset.character });
+  }
   if (event.target.closest('[data-action="open-order"]')) {
     const trigger = event.target.closest("[data-character]");
     openOrderModal({ characterId: trigger?.dataset.character });
@@ -702,9 +851,13 @@ document.addEventListener("click", (event) => {
 
   const publish = event.target.closest("[data-publish-post]");
   if (publish) publishPost(publish.dataset.publishPost);
+
+  const coverButton = event.target.closest("[data-set-cover]");
+  if (coverButton) setCharacterCover(coverButton.dataset.setCover, coverButton.dataset.imageUrl);
 });
 
 document.querySelector("#orderForm").addEventListener("submit", submitOrder);
 document.querySelector("#characterForm").addEventListener("submit", submitCharacter);
+imageForm.addEventListener("submit", submitImage);
 window.addEventListener("hashchange", render);
 render();
