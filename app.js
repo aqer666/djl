@@ -274,9 +274,7 @@ function renderUserCard() {
     <p>当前身份</p>
     <strong>${user.name}</strong>
     <span>${user.role} · ${user.email}</span>
-    <div class="role-switch">
-      ${state.users.map((item) => `<button class="${item.id === user.id ? "selected" : ""}" data-user="${item.id}">${item.role}</button>`).join("")}
-    </div>
+    <a class="button button-light wide-button user-login-button" href="./login.html">切换登录身份</a>
   `;
 }
 
@@ -1058,6 +1056,10 @@ function render() {
   renderUserCard();
   const route = getRoute();
   if (route === "/" || route === "") return renderHome();
+  if (route === "/login") {
+    window.location.href = "./login.html";
+    return;
+  }
   if (route === "/artists") return renderArtists();
   if (route.startsWith("/artists/")) return renderArtistDetail(route.split("/")[2]);
   if (route === "/characters") return renderCharacters();
@@ -1070,20 +1072,6 @@ function render() {
 document.addEventListener("click", (event) => {
   const routeButton = event.target.closest("[data-route-button]");
   if (routeButton) location.hash = `#${routeButton.dataset.routeButton}`;
-
-  const userButton = event.target.closest("[data-user]");
-  if (userButton) {
-    state.activeUserId = userButton.dataset.user;
-    saveState();
-    render();
-  }
-
-  if (event.target.closest('[data-action="login"]')) {
-    const index = state.users.findIndex((user) => user.id === state.activeUserId);
-    state.activeUserId = state.users[(index + 1) % state.users.length].id;
-    saveState();
-    render();
-  }
 
   if (event.target.closest('[data-action="new-character"]')) characterModal.showModal();
   if (event.target.closest('[data-action="open-order"]')) {
