@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>登录 - OC Forge</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="login-page">
+    <main class="login-page-shell">
+      <header class="login-page-head">
+        <a class="brand" href="./index.html#/">
+          <span class="brand-mark">OF</span>
+          <span>
+            <strong>OC Forge</strong>
+            <small>原创角色约稿社区</small>
+          </span>
+        </a>
+        <a class="button button-light" href="./index.html#/">返回首页</a>
+      </header>
+
+      <section class="login-screen">
+        <div class="login-intro">
+          <span class="ticket-label">OC Forge access</span>
+          <h1>选择身份，进入对应工作台。</h1>
+          <p>当前是演示版登录页，不收集密码或真实信息。三种身份使用本地 mock 账号，方便分别体验 OC 创作、画师接单和运营审核。</p>
+        </div>
+        <div class="login-layout">
+          <div class="login-role-grid" id="loginRoleGrid"></div>
+          <aside class="login-preview" aria-label="身份能力预览">
+            <div class="preview-card-stack">
+              <div class="preview-character">
+                <span>OC</span>
+                <strong>绫濑零音</strong>
+                <small>角色资产 · 头像 · 角色卡</small>
+              </div>
+              <div class="preview-status-row">
+                <span>公开稿单</span>
+                <strong>3</strong>
+              </div>
+              <div class="preview-status-row">
+                <span>待审核</span>
+                <strong>1</strong>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="./login.js"></script>
+  </body>
+</html>
