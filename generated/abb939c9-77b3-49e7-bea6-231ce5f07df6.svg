@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#f6f4ee" offset="0"/>
+      <stop stop-color="#16a6a6" offset="0.52"/>
+      <stop stop-color="#e35545" offset="1"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#272421" flood-opacity=".24"/></filter>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <g opacity=".18" stroke="#fffdfa" stroke-width="2">
+    <path d="M0 160H1024M0 320H1024M0 480H1024M0 640H1024M0 800H1024"/>
+    <path d="M160 0V1024M320 0V1024M480 0V1024M640 0V1024M800 0V1024"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="166" y="118" width="692" height="788" rx="34" fill="#fffdfa" opacity=".94"/>
+    <circle cx="512" cy="360" r="154" fill="#272421"/>
+    <circle cx="512" cy="334" r="122" fill="#f6d8c8"/>
+    <path d="M368 328c42-132 242-152 300 0 20-90-34-174-152-188-114 10-176 86-148 188Z" fill="#dce8e6"/>
+    <circle cx="468" cy="334" r="15" fill="#272421"/>
+    <circle cx="556" cy="334" r="15" fill="#16a6a6"/>
+    <path d="M460 404c32 24 74 24 106 0" fill="none" stroke="#272421" stroke-width="10" stroke-linecap="round"/>
+    <path d="M332 640c44-126 316-126 360 0v118H332Z" fill="#272421"/>
+    <path d="M390 676h244" stroke="#e0b44b" stroke-width="18" stroke-linecap="round"/>
+  </g>
+  <rect x="220" y="778" width="584" height="72" rx="18" fill="#272421"/>
+  <text x="512" y="823" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#fffdfa">绫濑零音</text>
+  <text x="76" y="84" font-family="Consolas, monospace" font-size="28" font-weight="700" fill="#fffdfa">MOCK AI IMAGE 1</text>
+  <text x="76" y="940" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#272421">soft_school</text>
+  <text x="76" y="976" font-family="Arial, sans-serif" font-size="18" fill="#272421">银灰短发，旧书店背景，雨夜霓虹，冷静表情，原创角色头像</text>
+</svg>

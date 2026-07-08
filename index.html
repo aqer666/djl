@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OC Forge - 创作约稿社区</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="rail" aria-label="主导航">
+        <a class="brand" href="#/" data-route="/">
+          <span class="brand-mark">OF</span>
+          <span>
+            <strong>OC Forge</strong>
+            <small>原创角色约稿社区</small>
+          </span>
+        </a>
+
+        <nav class="nav-links" id="navLinks">
+          <a href="#/" data-route="/">首页</a>
+          <a href="#/artists" data-route="/artists">画师</a>
+          <a href="#/characters" data-route="/characters">OC</a>
+          <a href="#/orders" data-route="/orders">订单</a>
+          <a href="#/community" data-route="/community">社区</a>
+          <a href="#/dashboard" data-route="/dashboard">后台</a>
+        </nav>
+
+        <section class="user-card" id="userCard"></section>
+      </aside>
+
+      <main>
+        <div class="announce-bar">
+          <span>MVP</span>
+          <strong>先跑通：找画师、建 OC、发起约稿、订单沟通、交付评价。</strong>
+          <button class="text-button" data-action="open-order">立即约稿</button>
+        </div>
+
+        <header class="topbar">
+          <div>
+            <span class="kicker" id="pageKicker">Commission workspace</span>
+            <h1 id="pageTitle">从 OC 档案到约稿交付的一站式社区</h1>
+          </div>
+          <div class="topbar-actions">
+            <button class="button button-light" data-action="login">切换身份</button>
+            <button class="button button-dark" data-action="open-order">发布需求</button>
+          </div>
+        </header>
+
+        <section id="app"></section>
+      </main>
+    </div>
+
+    <dialog class="modal" id="orderModal">
+      <form method="dialog" class="modal-card" id="orderForm">
+        <div class="modal-head">
+          <div>
+            <span class="kicker">Create order</span>
+            <h2>发起约稿</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="关闭">×</button>
+        </div>
+        <div class="form-grid">
+          <label>
+            选择画师
+            <select name="artistId" id="orderArtist"></select>
+          </label>
+          <label>
+            服务套餐
+            <select name="serviceId" id="orderService"></select>
+          </label>
+          <label>
+            关联 OC
+            <select name="characterId" id="orderCharacter"></select>
+          </label>
+          <label>
+            预算
+            <input name="budget" type="number" min="50" value="399" />
+          </label>
+          <label class="wide-field">
+            需求标题
+            <input name="title" value="赛博少女半身立绘约稿" />
+          </label>
+          <label class="wide-field">
+            详细需求
+            <textarea name="requirement" rows="5">希望突出旧书店、雨夜霓虹、机械义眼。可商用，需提供透明底 PNG。</textarea>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="button button-light" value="cancel">取消</button>
+          <button class="button button-dark" value="default" type="submit">提交给画师</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="modal" id="characterModal">
+      <form method="dialog" class="modal-card" id="characterForm">
+        <div class="modal-head">
+          <div>
+            <span class="kicker">Character archive</span>
+            <h2>创建 OC 档案</h2>
+          </div>
+          <button class="icon-button" value="cancel" aria-label="关闭">×</button>
+        </div>
+        <div class="form-grid">
+          <label>
+            角色名
+            <input name="name" value="绫濑零音" />
+          </label>
+          <label>
+            可见性
+            <select name="visibility">
+              <option value="公开">公开展示</option>
+              <option value="私密">仅约稿可见</option>
+            </select>
+          </label>
+          <label class="wide-field">
+            外貌与设定
+            <textarea name="description" rows="4">银灰短发、机械义眼、旧书店店主，能读取书页里残留的梦境数据。</textarea>
+          </label>
+          <label class="wide-field">
+            标签
+            <input name="tags" value="赛博, 半机械, 旧书店, 慢热" />
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="button button-light" value="cancel">取消</button>
+          <button class="button button-dark" type="submit">保存 OC</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
